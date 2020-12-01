@@ -1405,6 +1405,30 @@ class Formula
     raise "No block content defined for on_linux block" unless block
   end
 
+  # Block on executed on Intel CPUs. No-op on ARM, PPC, etc.
+  # <pre>on_intel do
+  # # Do something Intel-specific
+  # end</pre>
+  def on_intel(&block)
+    raise "no block content defined for on_intel block" unless block
+  end
+
+  # Block on executed on ARM CPUs. No-op on Intel, PPC, etc.
+  # <pre>on_arm do
+  # # Do something ARM-specific
+  # end</pre>
+  def on_arm(&block)
+    raise "no block content defined for on_arm block" unless block
+  end
+
+  # Block on executed on PowerPC CPUs. No-op on ARM, Intel, etc.
+  # <pre>on_ppc do
+  # # Do something ppc-specific
+  # end</pre>
+  def on_ppc(&block)
+    raise "no block content defined for on_ppc block" unless block
+  end
+
   # Standard parameters for cargo builds.
   def std_cargo_args
     ["--locked", "--root", prefix, "--path", "."]
@@ -2573,6 +2597,30 @@ class Formula
       raise "No block content defined for on_linux block" unless block
     end
 
+  # Block on executed on Intel CPUs. No-op on ARM, PPC, etc.
+  # <pre>on_intel do
+  # # Do something Intel-specific
+  # end</pre>
+  def on_intel(&block)
+    raise "no block content defined for on_intel block" unless block
+  end
+
+  # Block on executed on ARM CPUs. No-op on Intel, PPC, etc.
+  # <pre>on_arm do
+  # # Do something ARM-specific
+  # end</pre>
+  def on_arm(&block)
+    raise "no block content defined for on_arm block" unless block
+  end
+
+  # Block on executed on PowerPC CPUs. No-op on ARM, Intel, etc.
+  # <pre>on_ppc do
+  # # Do something ppc-specific
+  # end</pre>
+  def on_ppc(&block)
+    raise "no block content defined for on_ppc block" unless block
+  end
+
     # @!attribute [w] option
     # Options can be used as arguments to `brew install`.
     # To switch features on/off: `"with-something"` or `"with-otherthing"`.
@@ -2867,3 +2915,4 @@ class Formula
 end
 
 require "extend/os/formula"
+require "extend/arch/formula"
