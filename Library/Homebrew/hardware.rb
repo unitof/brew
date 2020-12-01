@@ -141,6 +141,10 @@ module Hardware
         type == :arm
       end
 
+      def arm64?
+        arm? && is_64_bit?
+      end
+
       def little_endian?
         !big_endian?
       end
