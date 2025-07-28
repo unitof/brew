@@ -88,6 +88,7 @@ module OS
             check_for_installed_developer_tools
             check_xcode_up_to_date
             check_clt_up_to_date
+            check_xcode_macos_frameworks
           ].freeze
         end
 
@@ -482,6 +483,17 @@ module OS
               sudo rm -rf #{path_to_remove}
 
             #{installation_instructions}
+          EOS
+        end
+
+        def check_xcode_macos_frameworks
+          return unless MacOS::Xcode.installed?
+          return if MacOS::Xcode.macos_sdk_installed?
+
+          <<~EOS
+            Xcode is installed but the macOS SDK is incomplete.
+            Please install the macOS SDK from the Xcode Components tab in Preferences.
+            This is required for compiling software that uses macOS-specific APIs.
           EOS
         end
 

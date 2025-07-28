@@ -17,6 +17,7 @@ module OS
       def self.latest_version(macos: MacOS.version)
         macos = macos.strip_patch
         case macos
+        when "26" then "26.0"
         when "15" then "16.4"
         when "14" then "16.2"
         when "13" then "15.2"
@@ -43,6 +44,7 @@ module OS
       def self.minimum_version
         macos = MacOS.version
         case macos
+        when "26" then "26.0"
         when "15" then "16.0"
         when "14" then "15.0"
         when "13" then "14.1"
@@ -130,6 +132,27 @@ module OS
       sig { returns(T::Boolean) }
       def self.installed?
         !prefix.nil?
+      end
+
+      sig { returns(T::Boolean) }
+      def self.macos_sdk_installed?
+        return false unless installed?
+
+        sdk = sdk_locator.sdk_if_applicable
+        return false if sdk.nil?
+
+        # Check that the SDK has the essential macOS system directories
+        # This ensures a complete macOS SDK installation rather than just CLT
+        system_paths = [
+          sdk.path/"System/Library/Frameworks",
+          sdk.path/"usr/include",
+          sdk.path/"usr/lib"
+        ]
+
+        system_paths.all?(&:directory?) &&
+          # Verify key frameworks exist
+          (sdk.path/"System/Library/Frameworks/Foundation.framework").directory? &&
+          (sdk.path/"System/Library/Frameworks/AppKit.framework").directory?
       end
 
       sig { returns(XcodeSDKLocator) }

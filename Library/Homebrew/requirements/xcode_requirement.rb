@@ -25,6 +25,7 @@ class XcodeRequirement < Requirement
   sig { returns(T::Boolean) }
   def xcode_installed_version!
     return false unless MacOS::Xcode.installed?
+    return false unless MacOS::Xcode.macos_sdk_installed?
     return true unless @version
 
     MacOS::Xcode.version >= @version
@@ -33,10 +34,18 @@ class XcodeRequirement < Requirement
   sig { returns(String) }
   def message
     version = " #{@version}" if @version
-    message = <<~EOS
-      A full installation of Xcode.app#{version} is required to compile
-      this software. Installing just the Command Line Tools is not sufficient.
-    EOS
+    message = if MacOS::Xcode.installed? && !MacOS::Xcode.macos_sdk_installed?
+      <<~EOS
+        A full installation of Xcode.app#{version} with macOS framework support is required to compile
+        this software. Xcode is installed but the macOS frameworks are missing.
+        Please download and install the macOS framework from the Xcode Components tab in Preferences.
+      EOS
+    else
+      <<~EOS
+        A full installation of Xcode.app#{version} is required to compile
+        this software. Installing just the Command Line Tools is not sufficient.
+      EOS
+    end
     if @version && Version.new(MacOS::Xcode.latest_version) < Version.new(@version)
       message + <<~EOS
 
